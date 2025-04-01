@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>位置情報をマップに表示 (Leaflet.js)</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #map {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>現在の位置をマップに表示 (Leaflet.js)</h1>
+    <button onclick="getLocation()">位置情報を取得</button>
+    <div id="map"></div>
+
+    <script>
+        let map = L.map('map').setView([35.681236, 139.767125], 15); // 初期位置: 東京駅
+
+        // OpenStreetMapタイルを追加
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        let marker = L.marker([35.681236, 139.767125]).addTo(map); // 初期マーカー
+
+        function getLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        map.setView([latitude, longitude], 15);
+                        marker.setLatLng([latitude, longitude])
+                            .bindPopup("現在地").openPopup();
+                    },
+                    (error) => {
+                        alert("位置情報を取得できませんでした");
+                    }
+                );
+            } else {
+                alert("このブラウザは位置情報をサポートしていません");
+            }
+        }
+    </script>
+</body>
+</html>
